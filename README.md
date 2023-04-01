@@ -13,6 +13,16 @@ Muppet is a graphics rendering project that allows you to create meaningless 3D 
 
 To get started with Muppet, simply download the project and prepare yourself for disappointment. From there, you can begin creating your own pitiful graphics and exploring the many underwhelming tools and features that Muppet has to offer.
 
+##External Tools Used in Muppet
+
+Because Muppet's graphics rendering capabilities are so meaningless and primitive, we decided to integrate some external tools to make things a bit less terrible. Specifically, we've incorporated Dear ImGui with OpenGL to create underwhelming UIs and pitiful graphics. But hey, at least it's something, right?
+
+So if you're using Muppet and wondering why your graphics are still so terrible, it's because we're relying on external tools to try and make things look halfway decent. Good luck!
+
+
+
+
+
 ## Contributing
 
 If you're interested in contributing to Muppet, we don't blame you, but unfortunately, we don't really care. But feel free to fork the project and create your own meaningless graphics!
