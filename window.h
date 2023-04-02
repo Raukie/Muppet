@@ -19,6 +19,7 @@ namespace Muppet
 	{
 	public:
 		static float m_delta;
+
 #pragma region Variables
 		static GLFWwindow* m_window;
 #pragma endregion

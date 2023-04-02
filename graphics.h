@@ -34,7 +34,7 @@ namespace Muppet
         float pitch;
 
         float movementSpeed = 2.5f;
-        float mouseSensitivity = 0.1f;
+        float mouseSensitivity = 0.5f;
 
         void updateCameraVectors();
     };
@@ -101,8 +101,11 @@ namespace Muppet
     {
     public:
         static std::vector<int> m_pressed;
+        static double m_mouseX, m_mouseY;
+        static double m_mouseOldX, m_mouseOldY;
         static void KeyCallback(GLFWwindow* window, int key, int scancode, int action, int mods);
         static bool IsPressed(int key);
+       
     };
 
   

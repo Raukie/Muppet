@@ -16,6 +16,7 @@
 namespace Muppet
 {
 #pragma region Variable Initilization
+
 	int Window::m_width = 0;
 	int Window::m_height = 0;
 	int Window::m_major = 0;
@@ -49,7 +50,12 @@ namespace Muppet
 		auto now = std::chrono::steady_clock::now();
 		Window::m_delta = std::chrono::duration_cast<std::chrono::microseconds>(now - m_lastUpdate).count() / 1000000.0f;
 		Window::m_lastUpdate = now;
-		
+
+		Input::m_mouseOldX = Input::m_mouseX;
+		Input::m_mouseOldY = Input::m_mouseY;
+
+		glfwGetCursorPos(Window::m_window, &Input::m_mouseX, &Input::m_mouseY);
+
 		Graphics::Draw();
 		glfwSwapBuffers(Window::m_window);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -162,6 +168,7 @@ namespace Muppet
 
 		Graphics::Init(Window::m_width, Window::m_height);
 		glfwSetKeyCallback(Window::m_window, Input::KeyCallback);
+		
 		
 		
 }

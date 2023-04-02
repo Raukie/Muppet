@@ -18,6 +18,10 @@ namespace Muppet
     unsigned int Graphics::m_defaultMatrix = 0;
     unsigned int Graphics::m_defaultShaderProgram = 0;
     std::vector<int> Input::m_pressed(400,0);
+    double Input::m_mouseX = 0;
+    double Input::m_mouseY = 0;
+    double Input::m_mouseOldX = 0;
+    double Input::m_mouseOldY = 0;
 #pragma endregion
 
     /*CAMERA*/
@@ -324,4 +328,5 @@ namespace Muppet
     {
         return (bool)Input::m_pressed[key];
     }
+
 }
