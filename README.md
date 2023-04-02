@@ -13,6 +13,48 @@ Muppet is a graphics rendering project that allows you to create meaningless 3D 
 
 To get started with Muppet, simply download the project and prepare yourself for disappointment. From there, you can begin creating your own pitiful graphics and exploring the many underwhelming tools and features that Muppet has to offer.
 
+### Example of what using Muppet looks like
+
+```c++
+#include "muppet.h" 
+#include "GLFW/glfw3.h"
+
+
+int main()
+{
+	Muppet::Window::CreateWindow(1000, 1000, 3, 3, "Debug", 1);
+	Muppet::Graphics::m_camera->SetPosition(glm::vec3(-1, 1, 0));
+	Muppet::Graphics::m_camera->LookAt(glm::vec3(1.0f, 1.0f, 1.0f));
+	Muppet::Graphics::LoadObject("cube.obj", glm::vec3(1.0f, 1.0f, 1.0f), glm::vec3(1.0f, 1.0f, 1.0f), glm::vec3(1.0f, 1.0f, 1.0f));
+
+	while (Muppet::Window::IsOpen())
+	{
+		if (Muppet::Input::IsPressed(GLFW_KEY_W))
+		{
+			Muppet::Graphics::m_camera->processKeyboard(0, Muppet::Window::m_delta);
+		}
+
+		if (Muppet::Input::IsPressed(GLFW_KEY_A))
+		{
+			Muppet::Graphics::m_camera->processKeyboard(2, Muppet::Window::m_delta);
+		}
+
+		if (Muppet::Input::IsPressed(GLFW_KEY_S))
+		{
+			Muppet::Graphics::m_camera->processKeyboard(1, Muppet::Window::m_delta);
+		}
+
+		if (Muppet::Input::IsPressed(GLFW_KEY_D))
+		{
+			Muppet::Graphics::m_camera->processKeyboard(3, Muppet::Window::m_delta);
+
+		}
+	}
+	
+	return 0;
+}
+```
+
 ## External Tools Used in Muppet
 
 Because Muppet's graphics rendering capabilities are so meaningless and primitive, we decided to integrate some external tools to make things a bit less terrible. Specifically, we've incorporated Dear ImGui with OpenGL to create underwhelming UIs and pitiful graphics. But hey, at least it's something, right?
