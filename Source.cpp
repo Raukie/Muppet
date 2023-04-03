@@ -3,17 +3,19 @@
 
 void CubeScene(int w, int h, int z, float gap)
 {
-	std::shared_ptr<Muppet::Object> Cube = Muppet::Graphics::LoadObject("cube.obj", glm::vec3(1.0f, 1.0f, 1.0f), glm::vec3(1.0f, 1.0f, 1.0f), glm::vec3(1.0f, 1.0f, 1.0f)).lock();
+	std::shared_ptr<Muppet::Object> Cube = Muppet::Graphics::LoadObject("Cube.obj", glm::vec3(1.0f, 1.0f, 1.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(1.0f, 1.0f, 1.0f)).lock();
 	for (int i = 0; i < w; i++)
 	{
 		for (int j = 0; j < h; j++)
 		{
 			for (int p = 0; p < z; p++)
 			{
-				Cube->Clone(glm::vec3((1.0f + gap)  * i, (1.0f + gap) * j, (1.0f + gap) * p), glm::vec3(1.0f, 1.0f, 1.0f), glm::vec3(1.0f, 1.0f, 1.0f));
+				Cube->Clone(glm::vec3((1.0f + gap)  * i, (1.0f + gap) * j, (1.0f + gap) * p), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(1.0f, 1.0f, 1.0f));
 			}
 		}
 	}
+	Cube->m_drawMethod = GL_TRIANGLES;
+	Cube->GenInstanceBuffer();
 }
 
 void CityScene()

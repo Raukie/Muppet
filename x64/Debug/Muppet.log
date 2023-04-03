@@ -1,12 +1,6 @@
-﻿  graphics.cpp
+﻿  Source.cpp
 C:\Users\Ryane\Desktop\projects\Muppet\loader.h(950,18): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
-C:\Users\Ryane\Desktop\projects\Muppet\graphics.cpp(131,113): warning C4267: 'argument': conversion from 'size_t' to 'GLsizei', possible loss of data
-C:\Users\Ryane\Desktop\projects\Muppet\graphics.cpp(136,117): warning C4267: 'argument': conversion from 'size_t' to 'GLsizei', possible loss of data
-C:\Users\Ryane\Desktop\projects\Muppet\graphics.cpp(269,61): warning C4267: 'initializing': conversion from 'size_t' to 'unsigned int', possible loss of data
-C:\Users\Ryane\Desktop\projects\Muppet\graphics.cpp(270,62): warning C4267: 'initializing': conversion from 'size_t' to 'unsigned int', possible loss of data
-C:\Users\Ryane\Desktop\projects\Muppet\graphics.cpp(272,65): warning C4267: 'initializing': conversion from 'size_t' to 'unsigned int', possible loss of data
-C:\Users\Ryane\Desktop\projects\Muppet\graphics.cpp(273,66): warning C4267: 'initializing': conversion from 'size_t' to 'unsigned int', possible loss of data
-glew32s.lib(glew.obj) : warning LNK4099: PDB '' was not found with 'glew32s.lib(glew.obj)' or at ''; linking object as if no debug info
-     Creating library C:\Users\Ryane\Desktop\projects\Muppet\x64\Debug\Muppet.lib and object C:\Users\Ryane\Desktop\projects\Muppet\x64\Debug\Muppet.exp
-LINK : warning LNK4098: defaultlib 'LIBCMT' conflicts with use of other libs; use /NODEFAULTLIB:library
+C:\Users\Ryane\Desktop\projects\Muppet\graphics.h(10,10): warning C4067: unexpected tokens following preprocessor directive - expected a newline
+C:\Users\Ryane\Desktop\projects\Muppet\Source.cpp(70,134): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+C:\Users\Ryane\Desktop\projects\Muppet\Source.cpp(70,77): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
   Muppet.vcxproj -> C:\Users\Ryane\Desktop\projects\Muppet\x64\Debug\Muppet.exe

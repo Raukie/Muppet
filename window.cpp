@@ -166,7 +166,7 @@ namespace Muppet
 
 		Graphics::Init(Window::m_width, Window::m_height);
 		glfwSetKeyCallback(Window::m_window, Input::KeyCallback);
-		glUniformMatrix4fv(Graphics::m_defaultMatrix, 1, GL_FALSE, &Graphics::m_projectionMatrix[0][0]);
+		
 	}
 
 }

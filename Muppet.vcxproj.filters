@@ -94,6 +94,9 @@
     <None Include="Basic.shader">
       <Filter>Resource Files</Filter>
     </None>
+    <None Include="Instance.shader">
+      <Filter>Resource Files</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Text Include="cube.obj">

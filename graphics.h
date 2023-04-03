@@ -7,6 +7,7 @@
 #include <fstream>
 #include <sstream>
 #include <GLFW/glfw3.h>
+#include <glm/gtc/type_ptr.hpp>"
 
 namespace Muppet
 {
@@ -59,10 +60,12 @@ namespace Muppet
         std::vector<float> m_vertices;
         std::vector<float> m_normals;
         std::vector<float> m_colors;
+        std::vector<float> m_instanceMatrices;
         std::vector<unsigned int> m_indices;
         GLuint m_drawMethod;
         std::vector<std::shared_ptr<Transform>> m_copies;
         Transform m_transform;
+
 
         std::weak_ptr<Transform> Clone(glm::vec3 p_pos, glm::vec3 p_rot, glm::vec3 p_scale);
         void Draw(unsigned int p_matrix);
@@ -76,12 +79,14 @@ namespace Muppet
         void GenColorBuffer();
         void UpdateVertexBuffer();
         void UpdateColorBuffer();
-
+        void GenInstanceBuffer();
+        void UpdateInstanceBuffer();
     private:
         unsigned int m_vertexBuffer;
         unsigned int m_colorBuffer;
         unsigned int m_normalBuffer;
         unsigned int m_vao;
+        unsigned int m_instanceBuffer;
 
        
 
@@ -93,10 +98,12 @@ namespace Muppet
         static glm::mat4 m_projectionMatrix;
         static Camera* m_camera;
         static std::vector<std::shared_ptr<Object>> m_objects;
+        static unsigned int m_instancedShaderProgram;
         static unsigned int m_defaultShaderProgram;
         static unsigned int m_defaultMatrix;
         static unsigned int m_modelMatrix;
         static unsigned int m_cameraMatrix;
+        static unsigned int m_worldMatrixInstance;
         static int CreateShader(const std::string& vertexShader, const std::string& fragmentShader);
         static unsigned int CompileShader(unsigned int type, const std::string& source);
         static std::string readFileIntoString2(const std::string& path);

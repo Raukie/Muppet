@@ -160,6 +160,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Basic.shader" />
+    <None Include="Instance.shader" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="cube.obj" />
