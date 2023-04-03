@@ -29,7 +29,7 @@ namespace Muppet
 #pragma endregion
 
 
-	void Window::CreateWindow(const int p_width, const int p_height, 
+	void Window::CreateMuppetWindow(const int p_width, const int p_height, 
 	const int p_major, const int p_minor, std::string p_windowName,
 	const int p_swapInterval = 0)
 	{
@@ -55,8 +55,6 @@ namespace Muppet
 		Input::m_mouseOldY = Input::m_mouseY;
 
 		glfwGetCursorPos(Window::m_window, &Input::m_mouseX, &Input::m_mouseY);
-
-		Graphics::Draw();
 		glfwSwapBuffers(Window::m_window);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		glfwPollEvents();
@@ -168,9 +166,7 @@ namespace Muppet
 
 		Graphics::Init(Window::m_width, Window::m_height);
 		glfwSetKeyCallback(Window::m_window, Input::KeyCallback);
-		
-		
-		
-}
+		glUniformMatrix4fv(Graphics::m_defaultMatrix, 1, GL_FALSE, &Graphics::m_projectionMatrix[0][0]);
+	}
 
 }

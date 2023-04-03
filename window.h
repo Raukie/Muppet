@@ -25,7 +25,7 @@ namespace Muppet
 #pragma endregion
 
 		//Function for the window
-		static void CreateWindow(const int p_width, const int p_height,
+		static void CreateMuppetWindow(const int p_width, const int p_height,
 			const int p_major, const int p_minor, std::string p_windowName, 
 			const int p_swapInterval
 		);

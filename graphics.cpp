@@ -17,11 +17,14 @@ namespace Muppet
     std::vector<std::shared_ptr<Object>> Graphics::m_objects;
     unsigned int Graphics::m_defaultMatrix = 0;
     unsigned int Graphics::m_defaultShaderProgram = 0;
+    unsigned int Graphics::m_cameraMatrix = 0;
+    unsigned int Graphics::m_modelMatrix = 0;
     std::vector<int> Input::m_pressed(400,0);
     double Input::m_mouseX = 0;
     double Input::m_mouseY = 0;
     double Input::m_mouseOldX = 0;
     double Input::m_mouseOldY = 0;
+    
 #pragma endregion
 
     /*CAMERA*/
@@ -89,51 +92,95 @@ namespace Muppet
         up = glm::normalize(glm::cross(right, front));
     }
 
-    /*OBJECT*/
-    void Object::Draw(glm::mat4 p_mvp, unsigned int p_matrix)
-    {
-        Object::UpdateMatrix();
-        p_mvp = p_mvp * Object::m_matrix;
-        glUniformMatrix4fv(p_matrix, 1, GL_FALSE, &p_mvp[0][0]);
+    /*TRANSFORM*/
 
-        glDrawElements(GL_TRIANGLES, Object::m_indices.size(), GL_UNSIGNED_INT, Object::m_indices.data());
+    void Transform::UpdateMatrix()
+    {
+        glm::mat4 Model(1.0f);
+        Model = glm::translate(Model, Transform::m_position);
+        Model = glm::rotate(Model, glm::radians(Transform::m_rotation.x), glm::vec3(1, 0, 0));
+        Model = glm::rotate(Model, glm::radians(Transform::m_rotation.y), glm::vec3(0, 1, 0));
+        Model = glm::rotate(Model, glm::radians(Transform::m_rotation.z), glm::vec3(0, 0, 1));
+        Model = glm::scale(Model, Transform::m_scale);
+        Transform::m_matrix = Model;
+    }
+
+    void Transform::SetPosition(glm::vec3 p_position)
+    {
+        Transform::m_position = p_position;
+        Transform::UpdateMatrix();
+    }
+
+    void Transform::SetRotation(glm::vec3 p_rotation)
+    {
+        Transform::m_rotation = p_rotation;
+        Transform::UpdateMatrix();
+    }
+
+    void Transform::SetScale(glm::vec3 p_scale)
+    {
+        Transform::m_scale = p_scale;
+        Transform::UpdateMatrix();
+    }
+
+    /*OBJECT*/
+    void Object::Draw(unsigned int p_matrix)
+    {
+        glBindVertexArray(Object::m_vao);
+        glUniformMatrix4fv(p_matrix, 1, GL_FALSE, &Object::m_transform.m_matrix[0][0]);
+        glDrawElements(Object::m_drawMethod, Object::m_indices.size(), GL_UNSIGNED_INT, Object::m_indices.data());
+
+        for(int i = 0; i < Object::m_copies.size(); i++){
+            
+            glUniformMatrix4fv(p_matrix, 1, GL_FALSE, &Object::m_copies[i]->m_matrix[0][0]);
+            glDrawElements(Object::m_drawMethod, Object::m_indices.size(), GL_UNSIGNED_INT, Object::m_indices.data());
+        }
+        glBindVertexArray(0);
+    }
+
+    std::weak_ptr<Transform> Object::Clone(glm::vec3 p_pos, glm::vec3 p_rot, glm::vec3 p_scale)
+    {
+        Transform transform;
+        transform.m_position = p_pos;
+        transform.m_rotation = p_rot;
+        transform.m_scale = p_scale;
+        transform.UpdateMatrix();
+        Object::m_copies.push_back(std::make_shared<Transform>(transform));
+        return Object::m_copies[Object::m_copies.size() - 1];
     }
 
     void Object::UpdateMatrix()
     {
-        glm::mat4 Model(1.0f);
-        Model = glm::translate(Model, Object::m_position);
-        Model = glm::rotate(Model, glm::radians(Object::m_rotation.x), glm::vec3(1, 0, 0));
-        Model = glm::rotate(Model, glm::radians(Object::m_rotation.y), glm::vec3(0, 1, 0));
-        Model = glm::rotate(Model, glm::radians(Object::m_rotation.z), glm::vec3(0, 0, 1));
-        Model = glm::scale(Model, Object::m_scale);
-        Object::m_matrix = Model;
+        Object::m_transform.UpdateMatrix();
     }
 
     void Object::SetPosition(glm::vec3 p_position)
     {
-        Object::m_position = p_position;
-        Object::UpdateMatrix();
+        Object::m_transform.m_position = p_position;
+        Object::m_transform.UpdateMatrix();
     }
 
     void Object::SetRotation(glm::vec3 p_rotation)
     {
-        Object::m_rotation = p_rotation;
-        Object::UpdateMatrix();
+        Object::m_transform.m_rotation = p_rotation;
+        Object::m_transform.UpdateMatrix();
     }
 
     void Object::SetScale(glm::vec3 p_scale)
     {
-        Object::m_scale = p_scale;
+        Object::m_transform.m_scale = p_scale;
         Object::UpdateMatrix();
     }
 
     void Object::GenBuffers()
     {
+        glGenVertexArrays(1, &m_vao);
+        glBindVertexArray(Object::m_vao);
         Object::GenVertexBuffer();
         Object::GenColorBuffer();
         Object::UpdateVertexBuffer();
         Object::UpdateColorBuffer();
+        glBindVertexArray(0);
     }
 
     void Object::GenVertexBuffer()
@@ -169,10 +216,12 @@ namespace Muppet
     void Object::RandomColors()
     {
         Object::m_colors.clear();
+
         for (int i = 0; i < Object::m_vertices.size(); i++)
         {
             Object::m_colors.push_back(rand() % 100 / 100.0f);
         }
+        
     }
 
     /*GRAPHICS*/
@@ -192,7 +241,7 @@ namespace Muppet
             45.0f,
             (float)p_width / (float)p_height,
             0.1f,
-            100.0f
+            10000.0f
         );
 
     }
@@ -273,19 +322,23 @@ namespace Muppet
         Graphics::InitProjection(p_width, p_height);
         Graphics::m_defaultShaderProgram = Graphics::ParseShader("Basic.shader");
         glUseProgram(Graphics::m_defaultShaderProgram);
-        Graphics::m_defaultMatrix = glGetUniformLocation(Graphics::m_defaultShaderProgram, "MVP");
+        Graphics::m_modelMatrix = glGetUniformLocation(Graphics::m_defaultShaderProgram, "MODEL");
+        Graphics::m_cameraMatrix = glGetUniformLocation(Graphics::m_defaultShaderProgram, "PROJECTION");
     }
 
     void Graphics::Draw()
     {
         glm::mat4 matrix = Graphics::m_projectionMatrix * Graphics::m_camera->getViewMatrix();
+     
+        glUniformMatrix4fv(Graphics::m_cameraMatrix, 1, GL_FALSE, &matrix[0][0]);
+
         for (int i = 0; i < Graphics::m_objects.size(); i++)
         {
-            Graphics::m_objects[i]->Draw(matrix, Graphics::m_defaultMatrix);
+            Graphics::m_objects[i]->Draw(Graphics::m_modelMatrix);
         }
     }
 
-    int Graphics::LoadObject(std::string p_filepath, glm::vec3 p_position, glm::vec3 p_rotation, glm::vec3 p_scale)
+    std::weak_ptr<Object> Graphics::LoadObject(std::string p_filepath, glm::vec3 p_position, glm::vec3 p_rotation, glm::vec3 p_scale)
     {
         Object object;
         objl::Loader loader;
@@ -304,10 +357,10 @@ namespace Muppet
         loader.~Loader();
 
         object.RandomColors();
-        object.m_position = p_position;
-        object.m_rotation = p_rotation;
+        object.m_transform.m_position = p_position;
+        object.m_transform.m_rotation = p_rotation;
         object.m_drawMethod = GL_TRIANGLES;
-        object.m_scale = p_scale;
+        object.m_transform.m_scale = p_scale;
         object.UpdateMatrix();
         object.GenBuffers();
         object.UpdateColorBuffer();
@@ -315,9 +368,23 @@ namespace Muppet
 
         Graphics::m_objects.push_back(std::make_shared<Object>(object));
 
-        /*TODO MUST RETURN WEAK POINTER INSTEAD OF INDEX*/
-        return Graphics::m_objects.size() - 1;
+        return Graphics::m_objects[Graphics::m_objects.size()-1];
     }
+
+    std::weak_ptr<Object> Graphics::CopyObject(std::weak_ptr<Object> p_object, glm::vec3 p_pos, glm::vec3 p_rot, glm::vec3 p_scale)
+    {
+        std::shared_ptr<Object> object = p_object.lock();
+        Object copy = *object;
+        copy.GenBuffers();
+        copy.m_transform.m_position = p_pos;
+        copy.m_transform.m_rotation = p_rot;
+        copy.m_transform.m_scale = p_scale;
+        copy.UpdateMatrix();
+        Graphics::m_objects.push_back(std::make_shared<Object>(copy));
+        return Graphics::m_objects[Graphics::m_objects.size() - 1];
+    }
+
+    /*INPUT*/
 
     void Input::KeyCallback(GLFWwindow* window, int key, int scancode, int action, int mods)
     {

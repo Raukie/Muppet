@@ -99,5 +99,11 @@
     <Text Include="cube.obj">
       <Filter>Resource Files</Filter>
     </Text>
+    <Text Include="cat.obj">
+      <Filter>Resource Files</Filter>
+    </Text>
+    <Text Include="city.obj">
+      <Filter>Resource Files</Filter>
+    </Text>
   </ItemGroup>
 </Project>

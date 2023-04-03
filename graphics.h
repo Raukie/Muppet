@@ -23,6 +23,7 @@ namespace Muppet
         void processKeyboard(int direction, float deltaTime);
         void processMouseMovement(float xoffset, float yoffset, bool constrainPitch = true);
         void SetPosition(glm::vec3 p_position);
+        float movementSpeed = 2.5f;
     private:
         glm::vec3 position;
         glm::vec3 front = glm::vec3(0.0f, 0.0f, -1.0f);;
@@ -33,10 +34,23 @@ namespace Muppet
         float yaw;
         float pitch;
 
-        float movementSpeed = 2.5f;
+      
         float mouseSensitivity = 0.5f;
 
         void updateCameraVectors();
+    };
+
+    class Transform
+    {
+    public:
+        void UpdateMatrix();
+        void SetPosition(glm::vec3 p_position);
+        void SetRotation(glm::vec3 p_rotation);
+        void SetScale(glm::vec3 p_scale);
+        glm::vec3 m_position;
+        glm::vec3 m_rotation;
+        glm::vec3 m_scale;
+        glm::mat4 m_matrix;
     };
 
     class Object
@@ -47,12 +61,11 @@ namespace Muppet
         std::vector<float> m_colors;
         std::vector<unsigned int> m_indices;
         GLuint m_drawMethod;
-        glm::vec3 m_position;
-        glm::vec3 m_rotation;
-        glm::vec3 m_scale;
-        glm::mat4 m_matrix;
+        std::vector<std::shared_ptr<Transform>> m_copies;
+        Transform m_transform;
 
-        void Draw(glm::mat4 p_mvp, unsigned int p_matrix);
+        std::weak_ptr<Transform> Clone(glm::vec3 p_pos, glm::vec3 p_rot, glm::vec3 p_scale);
+        void Draw(unsigned int p_matrix);
         void UpdateMatrix();
         void SetPosition(glm::vec3 p_position);
         void SetRotation(glm::vec3 p_rotation);
@@ -68,6 +81,7 @@ namespace Muppet
         unsigned int m_vertexBuffer;
         unsigned int m_colorBuffer;
         unsigned int m_normalBuffer;
+        unsigned int m_vao;
 
        
 
@@ -81,19 +95,21 @@ namespace Muppet
         static std::vector<std::shared_ptr<Object>> m_objects;
         static unsigned int m_defaultShaderProgram;
         static unsigned int m_defaultMatrix;
+        static unsigned int m_modelMatrix;
+        static unsigned int m_cameraMatrix;
         static int CreateShader(const std::string& vertexShader, const std::string& fragmentShader);
         static unsigned int CompileShader(unsigned int type, const std::string& source);
         static std::string readFileIntoString2(const std::string& path);
         static unsigned int ParseShader(const std::string& filepath);
         static void Init(int p_width, int p_height);
-
+        static std::weak_ptr<Object> CopyObject(std::weak_ptr<Object> p_object, glm::vec3 p_pos, glm::vec3 p_rot, glm::vec3 p_scale);
         static void InitCamera(glm::vec3 position = glm::vec3(0.0f, 0.0f, 0.0f),
             glm::vec3 up = glm::vec3(0.0f, 1.0f, 0.0f),
             glm::vec3 lookat = glm::vec3(1.0f, 1.0f, 1.0f));
 
         static void InitProjection(const int p_width, const int p_height);
        static void Draw();
-        static int LoadObject(std::string p_filepath, glm::vec3 p_position = glm::vec3(0,0,0), glm::vec3 p_rotation = glm::vec3(0, 0, 0), glm::vec3 p_scale = glm::vec3(1, 1, 1));
+        static std::weak_ptr<Object> LoadObject(std::string p_filepath, glm::vec3 p_position = glm::vec3(0,0,0), glm::vec3 p_rotation = glm::vec3(0, 0, 0), glm::vec3 p_scale = glm::vec3(1, 1, 1));
 
     };
 
