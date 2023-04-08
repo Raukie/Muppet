@@ -24,7 +24,7 @@ namespace Muppet
     unsigned int Graphics::m_cameraMatrix = 0;
     unsigned int Graphics::m_modelMatrix = 0;
     unsigned int Graphics::m_instancedShaderProgram = 0;
-    unsigned int Graphics::m_worldMatrixInstance = 0;
+    unsigned int Graphics::m_worldMatrixInstance = 0;    
     std::vector<int> Input::m_pressed(400,0);
     double Input::m_mouseX = 0;
     double Input::m_mouseY = 0;
@@ -137,13 +137,13 @@ namespace Muppet
         if (Object::m_copies.size() > 0)
         {
             glUseProgram(Graphics::m_instancedShaderProgram);
-            glDrawElementsInstanced(Object::m_drawMethod, Object::m_indices.size(), GL_UNSIGNED_INT, Object::m_indices.data(), (GLsizei)Object::m_copies.size() + 1);
+            glDrawElementsInstanced(Object::m_drawMethod, Object::m_indices.size(), GL_UNSIGNED_INT, (void*)0, (GLsizei)Object::m_copies.size() + 1);
         }
         else
         {
             glUseProgram(Graphics::m_defaultShaderProgram);
             glUniformMatrix4fv(p_matrix, 1, GL_FALSE, &Object::m_transform.m_matrix[0][0]);
-            glDrawElements(Object::m_drawMethod, Object::m_indices.size(), GL_UNSIGNED_INT, Object::m_indices.data());
+            glDrawElements(Object::m_drawMethod, Object::m_indices.size(), GL_UNSIGNED_INT, (void*)0);
         }
        
         glBindVertexArray(0);
@@ -189,8 +189,10 @@ namespace Muppet
         glBindVertexArray(Object::m_vao);
         Object::GenVertexBuffer();
         Object::GenColorBuffer();
+        Object::GenIndexBuffer();
         Object::UpdateVertexBuffer();
         Object::UpdateColorBuffer();
+        Object::UpdateIndexBuffer();
         glBindVertexArray(0);
     }
 
@@ -228,9 +230,21 @@ namespace Muppet
     {
         Object::m_colors.clear();
 
-        for (int i = 0; i < Object::m_vertices.size(); i++)
+        for (int i = 0; i < Object::m_vertices.size(); i+=9)
         {
-            Object::m_colors.push_back(rand() % 100 / 100.0f);
+            float a = rand() % 100 / 100.0f;
+            float b = rand() % 100 / 100.0f;
+            float c = rand() % 100 / 100.0f;
+            Object::m_colors.push_back(a);
+            Object::m_colors.push_back(b);
+            Object::m_colors.push_back(c);
+            Object::m_colors.push_back(a);
+            Object::m_colors.push_back(b);
+            Object::m_colors.push_back(c);
+            Object::m_colors.push_back(a);
+            Object::m_colors.push_back(b);
+            Object::m_colors.push_back(c);
+
         }
         
     }
@@ -274,6 +288,17 @@ namespace Muppet
             glVertexAttribDivisor(MATRICES_LOCATION + i, 1);
         }
         glBindVertexArray(0);
+    }
+
+    void Object::GenIndexBuffer()
+    {
+        glGenBuffers(1, &m_indexBuffer);
+    }
+
+    void Object::UpdateIndexBuffer()
+    {
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, Object::m_indexBuffer);
+        glBufferData(GL_ELEMENT_ARRAY_BUFFER, Object::m_indices.size() * sizeof(unsigned int), &Object::m_indices[0], GL_STATIC_DRAW);
     }
 
     /*GRAPHICS*/

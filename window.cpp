@@ -99,12 +99,15 @@ namespace Muppet
 			std::cout << "> Vsync enabled" << std::endl;
 		#endif // _LOGGING
 		} 
-		#ifdef _LOGGING
+	
 		else
 		{
+			glfwSwapInterval(0);
+#ifdef _LOGGING
 			std::cout << "> Vsync disabled" << std::endl;
+#endif // _LOGGING
 		}
-		#endif // _LOGGING
+		
 
 
 		glewExperimental = GL_TRUE;

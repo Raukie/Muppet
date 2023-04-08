@@ -29,11 +29,11 @@ void CityScene()
 int main()
 {
 
-	Muppet::Window::CreateMuppetWindow(1000, 1000, 3, 3, "Debug", 0);
+	Muppet::Window::CreateMuppetWindow(1920, 1080, 3, 3, "Debug", 0);
 	Muppet::Graphics::m_camera->SetPosition(glm::vec3(-1, 1, 0));
 	Muppet::Graphics::m_camera->LookAt(glm::vec3(1.0f, 1.0f, 1.0f));
 	
-	CubeScene(100, 100, 100, 1.0f);
+	CubeScene(100, 100, 100, 10.0f);
 	
 	//std::weak_ptr<Muppet::Object> weakCat = Muppet::Graphics::LoadObject("cat.obj", glm::vec3(1.0f, 1.0f, 1.0f), glm::vec3(-90.0f, 0.0f, 0.0f), glm::vec3(0.03f, 0.03f, 0.03f));
 	//Muppet::Graphics::CopyObject(weakCat, glm::vec3(1.0f, 1.0f, 1.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.03f, 0.03f, 0.03f));
@@ -71,12 +71,13 @@ int main()
 		}
 
 		//std::shared_ptr<Muppet::Object> cat = weakCube.lock();
-
+		
 		ImGui_ImplGlfw_NewFrame();
 		ImGui_ImplOpenGL3_NewFrame();
 
 		ImGui::NewFrame();
 
+	
 		ImGui::Begin("Debug");
 		ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / io.Framerate, io.Framerate);
 		ImGui::End();
@@ -110,9 +111,6 @@ int main()
 		ImGui::UpdatePlatformWindows();
 		ImGui::RenderPlatformWindowsDefault();
 		ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
-
-
-		
 	}
 
 	

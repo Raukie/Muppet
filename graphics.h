@@ -81,15 +81,15 @@ namespace Muppet
         void UpdateColorBuffer();
         void GenInstanceBuffer();
         void UpdateInstanceBuffer();
+        void GenIndexBuffer();
+        void UpdateIndexBuffer();
     private:
         unsigned int m_vertexBuffer;
         unsigned int m_colorBuffer;
         unsigned int m_normalBuffer;
         unsigned int m_vao;
         unsigned int m_instanceBuffer;
-
-       
-
+        unsigned int m_indexBuffer;
     };
 
     class Graphics
