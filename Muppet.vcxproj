@@ -140,6 +140,7 @@
     <ClCompile Include="imgui\imgui_impl_opengl3.cpp" />
     <ClCompile Include="imgui\imgui_tables.cpp" />
     <ClCompile Include="imgui\imgui_widgets.cpp" />
+    <ClCompile Include="Minecraft_Demo.cpp" />
     <ClCompile Include="Source.cpp" />
     <ClCompile Include="window.cpp" />
   </ItemGroup>
@@ -155,11 +156,13 @@
     <ClInclude Include="imgui\imstb_textedit.h" />
     <ClInclude Include="imgui\imstb_truetype.h" />
     <ClInclude Include="loader.h" />
+    <ClInclude Include="Minecraft_Demo.h" />
     <ClInclude Include="muppet.h" />
     <ClInclude Include="window.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Basic.shader" />
+    <None Include="cpp.hint" />
     <None Include="Instance.shader" />
   </ItemGroup>
   <ItemGroup>

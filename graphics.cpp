@@ -137,7 +137,7 @@ namespace Muppet
         if (Object::m_copies.size() > 0)
         {
             glUseProgram(Graphics::m_instancedShaderProgram);
-            glDrawElementsInstanced(Object::m_drawMethod, Object::m_indices.size(), GL_UNSIGNED_INT, (void*)0, (GLsizei)Object::m_copies.size() + 1);
+            glDrawElementsInstanced(Object::m_drawMethod, Object::m_indices.size(), GL_UNSIGNED_INT, (void*)0, (GLsizei)Object::m_copies.size());
         }
         else
         {
@@ -226,6 +226,16 @@ namespace Muppet
         glBindBuffer(GL_ARRAY_BUFFER, 0);
     }
 
+    void Object::FillColor(glm::vec3 color)
+    {
+        for (int i = 0; i < Object::m_vertices.size(); i+=3)
+        {
+            Object::m_colors.push_back(color.x / 255.0f);
+            Object::m_colors.push_back(color.y / 255.0f);
+            Object::m_colors.push_back(color.z / 255.0f);
+        }
+    }
+
     void Object::RandomColors()
     {
         Object::m_colors.clear();
@@ -261,11 +271,6 @@ namespace Muppet
     {
         glBindVertexArray(Object::m_vao);
         Object::m_instanceMatrices.clear();
-        const float* mSource = (const float*)glm::value_ptr(Object::m_transform.m_matrix);
-        for (int j = 0; j < 16; j++)
-        {
-            Object::m_instanceMatrices.push_back(mSource[j]);
-        }
         for (int i = 0; i < Object::m_copies.size(); i++)
         {
             const float* pSource = (const float*)glm::value_ptr(Object::m_copies[i]->m_matrix);
@@ -299,6 +304,13 @@ namespace Muppet
     {
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, Object::m_indexBuffer);
         glBufferData(GL_ELEMENT_ARRAY_BUFFER, Object::m_indices.size() * sizeof(unsigned int), &Object::m_indices[0], GL_STATIC_DRAW);
+    }
+    
+    void Object::AddVertex(glm::vec3 pos)
+    {
+        Object::m_vertices.push_back(pos.x);
+        Object::m_vertices.push_back(pos.y);
+        Object::m_vertices.push_back(pos.z);
     }
 
     /*GRAPHICS*/
@@ -445,7 +457,6 @@ namespace Muppet
         object.RandomColors();
         object.m_transform.m_position = p_position;
         object.m_transform.m_rotation = p_rotation;
-        object.m_drawMethod = GL_TRIANGLES;
         object.m_transform.m_scale = p_scale;
         object.UpdateMatrix();
         object.GenBuffers();
@@ -455,6 +466,13 @@ namespace Muppet
         Graphics::m_objects.push_back(std::make_shared<Object>(object));
 
         return Graphics::m_objects[Graphics::m_objects.size()-1];
+    }
+
+    std::weak_ptr<Object> Graphics::CreateEmptyObject()
+    {
+        Object obj;
+        Graphics::m_objects.push_back(std::make_shared<Object>(obj));
+        return Graphics::m_objects[Graphics::m_objects.size() - 1];
     }
 
     std::weak_ptr<Object> Graphics::CopyObject(std::weak_ptr<Object> p_object, glm::vec3 p_pos, glm::vec3 p_rot, glm::vec3 p_scale)
@@ -469,6 +487,23 @@ namespace Muppet
         Graphics::m_objects.push_back(std::make_shared<Object>(copy));
         return Graphics::m_objects[Graphics::m_objects.size() - 1];
     }
+    
+    bool Graphics::DeleteObject(std::weak_ptr<Object> p_ptr1)
+    {
+        for (int i = 0; i < Graphics::m_objects.size(); i++)
+            if (Graphics::m_objects[i] == p_ptr1.lock())
+                return true;
+        return false;
+    }
+
+    void Graphics::SetGlobalDrawMethod(unsigned int p_drawMethod)
+    {
+        for (int i = 0; i < Graphics::m_objects.size(); i++)
+        {
+            std::shared_ptr<Object> obj = Graphics::m_objects[i];
+            obj->m_drawMethod = p_drawMethod;
+        }
+    }
 
     /*INPUT*/
 
@@ -482,4 +517,66 @@ namespace Muppet
         return (bool)Input::m_pressed[key];
     }
 
+    /*MATH*/
+
+    float interpolate(float a0, float a1, float w)
+    {
+
+        return (a1 - a0) * w + a0;
+  
+    }
+
+    glm::vec2 randomGradient(int ix, int iy)
+    {
+        const unsigned w = 8 * sizeof(unsigned);
+        const unsigned s = w / 2; // rotation width
+        unsigned a = ix, b = iy;
+        a *= 3284157443; b ^= a << s | a >> w - s;
+        b *= 1911520717; a ^= b << s | b >> w - s;
+        a *= 2048419325;
+        float random = a * (3.14159265 / ~(~0u >> 1)); 
+        glm::vec2 v;
+        v.x = cos(random); v.y = sin(random);
+        return v;
+    }
+
+
+    float dotGridGradient(int ix, int iy, float x, float y)
+    {
+
+        glm::vec2 gradient = randomGradient(ix, iy);
+
+
+        float dx = x - (float)ix;
+        float dy = y - (float)iy;
+
+ 
+        return (dx * gradient.x + dy * gradient.y);
+    }
+
+
+    float perlin(float x, float y)
+    {
+
+        int x0 = (int)floor(x);
+        int x1 = x0 + 1;
+        int y0 = (int)floor(y);
+        int y1 = y0 + 1;
+
+        float sx = x - (float)x0;
+        float sy = y - (float)y0;
+
+        float n0, n1, ix0, ix1, value;
+
+        n0 = dotGridGradient(x0, y0, x, y);
+        n1 = dotGridGradient(x1, y0, x, y);
+        ix0 = interpolate(n0, n1, sx);
+
+        n0 = dotGridGradient(x0, y1, x, y);
+        n1 = dotGridGradient(x1, y1, x, y);
+        ix1 = interpolate(n0, n1, sx);
+
+        value = interpolate(ix0, ix1, sy);
+        return value;
+    }
 }

@@ -1,6 +1,8 @@
 ﻿  Source.cpp
 C:\Users\Ryane\Desktop\projects\Muppet\loader.h(950,18): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
 C:\Users\Ryane\Desktop\projects\Muppet\graphics.h(10,10): warning C4067: unexpected tokens following preprocessor directive - expected a newline
-C:\Users\Ryane\Desktop\projects\Muppet\Source.cpp(70,134): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
-C:\Users\Ryane\Desktop\projects\Muppet\Source.cpp(70,77): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.22000.0\shared\minwindef.h(130,1): warning C4005: 'APIENTRY': macro redefinition
+C:\Users\Ryane\Desktop\projects\Muppet\external\include\GLFW\glfw3.h(123,1): message : see previous definition of 'APIENTRY'
+C:\Users\Ryane\Desktop\projects\Muppet\Source.cpp(129,134): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+C:\Users\Ryane\Desktop\projects\Muppet\Source.cpp(129,77): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
   Muppet.vcxproj -> C:\Users\Ryane\Desktop\projects\Muppet\x64\Debug\Muppet.exe

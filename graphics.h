@@ -25,8 +25,8 @@ namespace Muppet
         void processMouseMovement(float xoffset, float yoffset, bool constrainPitch = true);
         void SetPosition(glm::vec3 p_position);
         float movementSpeed = 2.5f;
-    private:
         glm::vec3 position;
+    private:
         glm::vec3 front = glm::vec3(0.0f, 0.0f, -1.0f);;
         glm::vec3 up;
         glm::vec3 right;
@@ -62,7 +62,7 @@ namespace Muppet
         std::vector<float> m_colors;
         std::vector<float> m_instanceMatrices;
         std::vector<unsigned int> m_indices;
-        GLuint m_drawMethod;
+        GLuint m_drawMethod = GL_TRIANGLES;
         std::vector<std::shared_ptr<Transform>> m_copies;
         Transform m_transform;
 
@@ -74,6 +74,7 @@ namespace Muppet
         void SetRotation(glm::vec3 p_rotation);
         void SetScale(glm::vec3 p_scale);
         void RandomColors();
+        void FillColor(glm::vec3 color);
         void GenBuffers();
         void GenVertexBuffer();
         void GenColorBuffer();
@@ -83,6 +84,7 @@ namespace Muppet
         void UpdateInstanceBuffer();
         void GenIndexBuffer();
         void UpdateIndexBuffer();
+        void AddVertex(glm::vec3 pos);
     private:
         unsigned int m_vertexBuffer;
         unsigned int m_colorBuffer;
@@ -113,11 +115,13 @@ namespace Muppet
         static void InitCamera(glm::vec3 position = glm::vec3(0.0f, 0.0f, 0.0f),
             glm::vec3 up = glm::vec3(0.0f, 1.0f, 0.0f),
             glm::vec3 lookat = glm::vec3(1.0f, 1.0f, 1.0f));
+        static void SetGlobalDrawMethod(unsigned int p_drawMethod);
 
         static void InitProjection(const int p_width, const int p_height);
        static void Draw();
         static std::weak_ptr<Object> LoadObject(std::string p_filepath, glm::vec3 p_position = glm::vec3(0,0,0), glm::vec3 p_rotation = glm::vec3(0, 0, 0), glm::vec3 p_scale = glm::vec3(1, 1, 1));
-
+        static std::weak_ptr<Object> CreateEmptyObject();
+        bool DeleteObject(std::weak_ptr<Object> p_ptr1);
     };
 
     class Input
@@ -131,5 +135,16 @@ namespace Muppet
        
     };
 
+    /*MATH*/
+
+    float interpolate(float a0, float a1, float w);
+
+    glm::vec2 randomGradient(int ix, int iy);
+
+
+    float dotGridGradient(int ix, int iy, float x, float y);
+
+
+    float perlin(float x, float y);
   
 }

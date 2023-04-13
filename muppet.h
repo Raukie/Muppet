@@ -1,9 +1,8 @@
 #pragma once
 
-#ifdef _WIN32
-#include <windows.h>
-extern "C" _declspec(dllexport) DWORD NvOptimusEnablement = true;
-#endif // __WIN32
 
+#ifndef _MUPPET
+#define _MUPPET
 #include "window.h"
 #include "graphics.h"
+#endif
